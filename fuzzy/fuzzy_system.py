@@ -9,16 +9,27 @@ def triangular(x, a, b, c):
         return (c - x) / (c - b)
 
 
+def trapezoidal(x, a, b, c, d):
+    if x < a or x > d:
+        return 0
+    elif b <= x <= c:
+        return 1
+    elif x < b:
+        return (x - a) / (b - a)
+    else:
+        return (d - x) / (d - c)
+
+
 # Membership functions
-def gpa_low(x): return triangular(x, 0, 4, 6)
+def gpa_low(x): return trapezoidal(x, 0, 0, 4, 6)
 def gpa_medium(x): return triangular(x, 5, 7, 8.5)
 def gpa_high(x): return triangular(x, 7.5, 9, 10)
 
-def attendance_low(x): return triangular(x, 0, 4, 6)
+def attendance_low(x): return trapezoidal(x, 0, 0, 4, 6)
 def attendance_medium(x): return triangular(x, 5, 7, 8.5)
 def attendance_high(x): return triangular(x, 7.5, 9, 10)
 
-def study_low(x): return triangular(x, 0, 3, 5)
+def study_low(x): return trapezoidal(x, 0, 0, 3, 5)
 def study_medium(x): return triangular(x, 4, 6, 8)
 def study_high(x): return triangular(x, 7, 9, 10)
 

@@ -28,7 +28,8 @@ print("Student Type:", student_type)
 
 print("\nRecommended Subjects:")
 for i in best_plan:
-    print("-", subjects.iloc[i]["subject"])
+    row = subjects.iloc[i]
+    print(f"- {row['subject']} (Difficulty: {row['difficulty']}, Credits: {row['credits']}, Category: {row['category']})")
 
 print("\nExpected Semester GPA:", round(predicted_gpa,2))
 

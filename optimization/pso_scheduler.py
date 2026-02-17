@@ -3,8 +3,8 @@ import pandas as pd
 import random
 from nn.predictor import predict_grade
 
-MAX_CREDITS = 18
-NUM_SUBJECTS = 4
+MAX_CREDITS = 22
+NUM_SUBJECTS = 6
 ITERATIONS = 30
 PARTICLES = 20
 
@@ -50,6 +50,10 @@ def evaluate_plan(plan, student, student_type):
 
     for idx in plan:
         row = subjects.iloc[idx]
+        
+        # Difficulty cap for Weak students - exclude very hard courses
+        if student_type == "Weak" and row["difficulty"] > 8:
+            return -150  # Heavy penalty for courses that are too difficult
 
         grade = get_subject_grade(idx, student)
 
@@ -62,8 +66,22 @@ def evaluate_plan(plan, student, student_type):
     avg = sum(grades) / len(grades)
 
     if student_type == "Weak":
-        hard = sum(subjects.iloc[i]["difficulty"] > 7 for i in plan)
-        avg -= hard * 0.7
+        # Stronger penalty for difficult courses - favor easier courses more strongly
+        difficulty_penalty = 0
+        for i in plan:
+            difficulty = subjects.iloc[i]["difficulty"]
+            if difficulty > 7:  # Very hard courses
+                difficulty_penalty += 1.5  # Strong penalty
+            elif difficulty > 6:  # Hard courses
+                difficulty_penalty += 0.8  # Moderate penalty
+            elif difficulty > 5:  # Medium-hard courses
+                difficulty_penalty += 0.3  # Light penalty
+        
+        # Bonus for easier courses (difficulty <= 4)
+        easy_bonus = sum(subjects.iloc[i]["difficulty"] <= 4 for i in plan) * 0.2
+        
+        avg -= difficulty_penalty
+        avg += easy_bonus
 
     return avg
 

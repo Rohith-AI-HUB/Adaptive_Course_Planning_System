@@ -5,7 +5,7 @@ from optimization.pso_scheduler import run_pso
 
 st.set_page_config(page_title="AI Course Advisor", layout="centered")
 
-st.title("Hybrid Computational Intelligence Course Advisor")
+st.title("Adaptive Course Advisor")
 
 st.write("Enter your academic details")
 
@@ -36,8 +36,9 @@ if st.button("Generate Recommendation"):
     st.success(student_type)
 
     st.subheader("Recommended Subjects")
-    for i in best_plan:
-        st.write("•", subjects.iloc[i]["subject"])
+    # Display recommended subjects with additional details in a table
+    recommended_df = subjects.iloc[best_plan][["subject", "difficulty", "credits", "category"]]
+    st.table(recommended_df.reset_index(drop=True))
 
     st.subheader("Expected GPA")
     st.info(round(predicted_gpa, 2))
